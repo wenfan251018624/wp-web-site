@@ -134,17 +134,12 @@ configure_mysql() {
     # 启动MySQL服务
     systemctl start mariadb > /dev/null 2>&1
     
-    # 首先尝试不使用密码连接root用户来设置密码
-    log "设置MySQL root密码..."
-    mysql -u root <<EOF
-ALTER USER 'root'@'localhost' IDENTIFIED BY 'root_password';
-FLUSH PRIVILEGES;
-EOF
+    # 等待服务完全启动
+    sleep 5
     
-    # 如果上面失败，尝试使用mysql_secure_installation
-    if [ $? -ne 0 ]; then
-        log "运行MySQL安全配置..."
-        mysql_secure_installation <<EOF
+    # 运行MySQL安全配置
+    log "运行MySQL安全配置..."
+    mysql_secure_installation <<EOF
 
 y
 root_password
@@ -154,7 +149,9 @@ y
 y
 y
 EOF
-    fi
+    
+    # 等待配置完成
+    sleep 3
     
     # 创建WordPress数据库和用户
     log "创建WordPress数据库和用户..."
@@ -164,18 +161,31 @@ EOF
     GRANT ALL PRIVILEGES ON wp_video_site.* TO 'wp_user'@'localhost';
     FLUSH PRIVILEGES;"
     
-    # 尝试使用root密码连接
-    if echo "$mysql_commands" | mysql -u root -proot_password > /dev/null 2>&1; then
-        success "MySQL数据库配置完成"
-    else
-        # 如果使用密码失败，尝试不使用密码（某些配置下可能有效）
-        if echo "$mysql_commands" | mysql -u root > /dev/null 2>&1; then
+    # 尝试使用root密码连接（提供更多重试机会）
+    retry_count=0
+    max_retries=3
+    
+    while [ $retry_count -lt $max_retries ]; do
+        if echo "$mysql_commands" | mysql -u root -proot_password > /dev/null 2>&1; then
             success "MySQL数据库配置完成"
+            return 0
         else
-            error "MySQL数据库配置失败"
-            log "请手动检查MariaDB配置"
-            return 1
+            retry_count=$((retry_count + 1))
+            log "数据库连接尝试 $retry_count 失败，等待重试..."
+            sleep 5
         fi
+    done
+    
+    # 如果使用密码失败，尝试不使用密码（某些配置下可能有效）
+    if echo "$mysql_commands" | mysql -u root > /dev/null 2>&1; then
+        success "MySQL数据库配置完成"
+        return 0
+    else
+        error "MySQL数据库配置失败"
+        log "请手动检查MariaDB配置"
+        log "尝试手动执行以下命令："
+        log "sudo mysql -u root -proot_password"
+        return 1
     fi
 }
 
