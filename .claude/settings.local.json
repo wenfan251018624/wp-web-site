@@ -55,7 +55,12 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git checkout:*)",
-      "Bash(chmod +x:*)"
+      "Bash(chmod +x:*)",
+      "Bash(./local-deploy.sh:*)",
+      "Bash(./local-deploy-fixed.sh:*)",
+      "Bash(php -S:*)",
+      "Bash(./test-local.sh:*)",
+      "Bash(./start-dev.sh)"
     ],
     "deny": [],
     "ask": []
