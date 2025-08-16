@@ -19,6 +19,12 @@ wp-web-site/
 ├── .gitignore                 # Git忽略文件配置
 ├── DEPLOYMENT.md              # 部署说明文档
 ├── README.md                  # 项目说明文件
+├── QUICK_START.md             # 快速开始指南
+├── LOCAL_DEVELOPMENT_SETUP.md # 本地开发环境详细设置
+├── DOCKER_DEVELOPMENT.md      # Docker开发环境说明
+├── docker-compose.yml         # Docker配置文件
+├── start-with-docker.sh       # Docker启动脚本
+├── test-local.sh              # 本地测试脚本
 ├── vps-setup.sh              # VPS环境安装脚本
 ├── db-setup.sql              # 数据库配置脚本
 ├── apache-config.conf        # Apache配置文件
@@ -49,10 +55,28 @@ wp-web-site/
 
 ### 本地开发
 
-1. 克隆项目仓库
-2. 安装本地开发环境 (MAMP/Docker/本地LAMP)
-3. 配置WordPress
-4. 激活自定义视频主题
+有多种方式进行本地开发：
+
+#### 方式1: 使用Docker (推荐)
+这是最简单的方式，无需配置复杂的本地环境：
+
+1. 安装Docker Desktop for Mac: https://www.docker.com/products/docker-desktop/
+2. 运行启动脚本:
+   ```bash
+   ./start-with-docker.sh
+   ```
+3. 访问 http://localhost:8080 开始使用
+
+#### 方式2: 手动配置本地环境
+如果不想使用Docker，请参考以下文档：
+- `QUICK_START.md`: 快速设置指南
+- `LOCAL_DEVELOPMENT_SETUP.md`: 详细设置说明
+
+#### 方式3: 简单的PHP服务器测试
+对于快速预览，可以使用PHP内置服务器：
+```bash
+./test-local.sh
+```
 
 ### 远程部署
 
@@ -68,6 +92,12 @@ wp-web-site/
 
 ## 部署脚本说明
 
+### 本地开发脚本
+- `start-with-docker.sh`: 使用Docker启动开发环境
+- `test-local.sh`: 使用PHP内置服务器快速测试
+- `docker-compose.yml`: Docker环境配置
+
+### 远程部署脚本
 - `vps-setup.sh`: 在VPS上安装LAMP环境
 - `db-setup.sql`: 配置MySQL数据库
 - `apache-config.conf`: Apache虚拟主机配置
@@ -78,24 +108,21 @@ wp-web-site/
 - `auto-deploy.sh`: 自动化部署脚本
 - `ssl-setup.sh`: 配置SSL证书
 - `backup.sh`: 定期备份脚本
+
+### 测试和维护脚本
 - `test-deploy.sh`: 部署流程测试
 - `test-video-embed.sh`: 视频嵌入功能测试
 - `test-performance.sh`: 网站性能测试
 - `security-check.sh`: 安全设置检查
 - `test-restore.sh`: 备份恢复测试
 
-## 维护
-
-1. 定期运行性能测试脚本
-2. 执行安全检查
-3. 验证备份完整性
-4. 更新WordPress核心、主题和插件
-5. 监控网站访问日志
-
 ## 文档
 
 - `DEPLOYMENT.md`: 详细的部署说明文档
 - `README.md`: 项目说明文件
+- `QUICK_START.md`: 快速开始指南
+- `LOCAL_DEVELOPMENT_SETUP.md`: 本地开发环境详细设置
+- `DOCKER_DEVELOPMENT.md`: Docker开发环境说明
 
 ## 许可证
 
