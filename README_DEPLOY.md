@@ -79,14 +79,39 @@ sudo certbot --apache -d your-domain.com
 
 ## 故障排除
 
+### 数据库配置失败
+
+如果遇到"MySQL数据库配置失败"错误，请尝试以下手动解决方法：
+
+```bash
+# 1. 启动MariaDB服务
+sudo systemctl start mariadb
+
+# 2. 登录MariaDB（首次可能无需密码）
+sudo mysql -u root
+
+# 3. 在MariaDB中执行以下命令：
+CREATE DATABASE IF NOT EXISTS wp_video_site;
+CREATE USER IF NOT EXISTS 'wp_user'@'localhost' IDENTIFIED BY 'wp_password';
+GRANT ALL PRIVILEGES ON wp_video_site.* TO 'wp_user'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;
+
+# 4. 重新运行部署脚本
+sudo bash deploy-centos.sh --install
+```
+
 ### 查看部署日志
 
 ```bash
 # 查看Apache错误日志
-sudo tail -f /var/log/apache2/error.log
+sudo tail -f /var/log/httpd/error_log
 
-# 查看MySQL错误日志
-sudo tail -f /var/log/mysql/error.log
+# 查看MariaDB错误日志
+sudo tail -f /var/log/mariadb/mariadb.log
+
+# 查看部署脚本日志
+sudo tail -f /var/log/wp-deploy.log
 ```
 
 ### 重新部署
@@ -94,15 +119,15 @@ sudo tail -f /var/log/mysql/error.log
 如果需要重新部署，可以先清理环境：
 ```bash
 # 停止服务
-sudo systemctl stop apache2
-sudo systemctl stop mysql
+sudo systemctl stop httpd
+sudo systemctl stop mariadb
 
 # 删除数据库
-sudo mysql -e "DROP DATABASE wp_video_site;"
-sudo mysql -e "DROP USER 'wp_user'@'localhost';"
+sudo mysql -u root -e "DROP DATABASE wp_video_site;"
+sudo mysql -u root -e "DROP USER 'wp_user'@'localhost';"
 
 # 重新运行部署脚本
-bash deploy.sh --install
+sudo bash deploy-centos.sh --install
 ```
 
 ## 支持

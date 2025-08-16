@@ -8,21 +8,24 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
+# 日志文件
+LOG_FILE="/var/log/wp-deploy.log"
+
 # 日志函数
 log() {
-    echo -e "${BLUE}[$(date +'%Y-%m-%d %H:%M:%S')]${NC} $1"
+    echo -e "${BLUE}[$(date +'%Y-%m-%d %H:%M:%S')]${NC} $1" | tee -a $LOG_FILE
 }
 
 success() {
-    echo -e "${GREEN}[SUCCESS]${NC} $1"
+    echo -e "${GREEN}[SUCCESS]${NC} $1" | tee -a $LOG_FILE
 }
 
 warning() {
-    echo -e "${YELLOW}[WARNING]${NC} $1"
+    echo -e "${YELLOW}[WARNING]${NC} $1" | tee -a $LOG_FILE
 }
 
 error() {
-    echo -e "${RED}[ERROR]${NC} $1"
+    echo -e "${RED}[ERROR]${NC} $1" | tee -a $LOG_FILE
 }
 
 # 显示使用说明
@@ -131,32 +134,48 @@ configure_mysql() {
     # 启动MySQL服务
     systemctl start mariadb > /dev/null 2>&1
     
-    # 运行安全配置
-    mysql_secure_installation <<EOF
+    # 首先尝试不使用密码连接root用户来设置密码
+    log "设置MySQL root密码..."
+    mysql -u root <<EOF
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'root_password';
+FLUSH PRIVILEGES;
+EOF
+    
+    # 如果上面失败，尝试使用mysql_secure_installation
+    if [ $? -ne 0 ]; then
+        log "运行MySQL安全配置..."
+        mysql_secure_installation <<EOF
 
 y
-wp_password
-wp_password
+root_password
+root_password
 y
 y
 y
 y
 EOF
+    fi
     
     # 创建WordPress数据库和用户
+    log "创建WordPress数据库和用户..."
     mysql_commands="
     CREATE DATABASE IF NOT EXISTS wp_video_site;
     CREATE USER IF NOT EXISTS 'wp_user'@'localhost' IDENTIFIED BY 'wp_password';
     GRANT ALL PRIVILEGES ON wp_video_site.* TO 'wp_user'@'localhost';
     FLUSH PRIVILEGES;"
     
-    echo "$mysql_commands" | mysql -u root -pwp_password > /dev/null 2>&1
-    
-    if [ $? -eq 0 ]; then
+    # 尝试使用root密码连接
+    if echo "$mysql_commands" | mysql -u root -proot_password > /dev/null 2>&1; then
         success "MySQL数据库配置完成"
     else
-        error "MySQL数据库配置失败"
-        return 1
+        # 如果使用密码失败，尝试不使用密码（某些配置下可能有效）
+        if echo "$mysql_commands" | mysql -u root > /dev/null 2>&1; then
+            success "MySQL数据库配置完成"
+        else
+            error "MySQL数据库配置失败"
+            log "请手动检查MariaDB配置"
+            return 1
+        fi
     fi
 }
 
