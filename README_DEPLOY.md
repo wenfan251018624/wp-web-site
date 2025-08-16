@@ -2,7 +2,13 @@
 
 ## 简介
 
-这个项目包含一个优化的一键部署脚本 `deploy.sh`，可以直接在git clone后的环境中运行，无需额外配置。
+这个项目包含优化的一键部署脚本，可以直接在git clone后的环境中运行，无需额外配置。
+
+### Ubuntu/Debian系统
+使用 `deploy.sh` 脚本
+
+### CentOS 7系统
+使用 `deploy-centos.sh` 脚本
 
 ## 使用方法
 
