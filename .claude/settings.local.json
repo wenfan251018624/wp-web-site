@@ -71,7 +71,9 @@
       "WebFetch(domain:api.wordpress.org)",
       "Bash(./quick-deploy.sh:*)",
       "Bash(bash -n:*)",
-      "Bash(sudo rm:*)"
+      "Bash(sudo rm:*)",
+      "Bash(find:*)",
+      "Bash(touch:*)"
     ],
     "deny": [],
     "ask": []
