@@ -70,7 +70,8 @@
       "Bash(cp:*)",
       "WebFetch(domain:api.wordpress.org)",
       "Bash(./quick-deploy.sh:*)",
-      "Bash(bash -n:*)"
+      "Bash(bash -n:*)",
+      "Bash(sudo rm:*)"
     ],
     "deny": [],
     "ask": []

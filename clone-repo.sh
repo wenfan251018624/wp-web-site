@@ -2,7 +2,7 @@
 # 在VPS上克隆GitHub仓库的脚本
 
 # 设置变量
-GITHUB_REPO="https://github.com/your-username/your-repo.git"
+GITHUB_REPO="https://github.com/your-username/your-repo.git"  # 请替换为您的实际仓库URL
 INSTALL_PATH="/var/www/html/wp-site"
 BRANCH="main"
 

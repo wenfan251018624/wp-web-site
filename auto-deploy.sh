@@ -2,7 +2,7 @@
 # 完整的自动部署脚本
 
 # 设置变量
-GITHUB_REPO="https://github.com/your-username/your-repo.git"
+GITHUB_REPO="https://github.com/your-username/your-repo.git"  # 请替换为您的实际仓库URL
 DEPLOY_PATH="/var/www/html/wp-site"
 BRANCH="main"
 DB_NAME="wp_video_site"
