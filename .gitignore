@@ -38,10 +38,32 @@ node_modules/
 # Docker #
 ##########
 docker-compose.override.yml
+docker-compose.yml
+start-with-docker.sh
 
 # Logs #
 ########
 *.log
+
+# Local Development Scripts #
+#############################
+start-dev.sh
+test-local.sh
+test-deploy.sh
+test-video-embed.sh
+test-performance.sh
+test-restore.sh
+
+# Local Development Documentation #
+###################################
+LOCAL_DEVELOPMENT_SETUP.md
+DOCKER_DEVELOPMENT.md
+QUICK_START.md
+
+# Development Tools #
+#####################
+*.dmg
+wp-cli.phar
 
 # OS generated files #
 ######################

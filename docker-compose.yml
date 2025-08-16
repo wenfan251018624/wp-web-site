@@ -1,8 +1,6 @@
-version: '3.8'
-
 services:
   wordpress:
-    image: wordpress:6.0-php8.2-apache
+    image: wordpress:php8.2-apache
     ports:
       - "8080:80"
     environment:
